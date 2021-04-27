@@ -1,0 +1,464 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Mapping Segregation in Black Hawk County, Iowa</title>
+  <link rel="icon" type="image/jpg" href="images/icon.jpg" />
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <link href='https://api.mapbox.com/mapbox-assembly/v0.24.0/assembly.min.css' rel='stylesheet'>
+  <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />
+  <link href="https://fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
+
+  <!--for filter button icon support-->
+<!--
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/v4-shims.css">
+-->
+  <!-- for easy buttons -->
+<!--
+  <link rel="stylesheet" href="css/easy-button.css">
+-->
+  <!-- for filter buttons -->
+<!--
+  <link rel="stylesheet" href="css/leaflet-tag-filter-button.css">
+-->
+  <style type="text/css">
+    h1 {
+      font-size: 30px;
+      font-family: 'Rubik', sans-serif;
+      display: inline-block;
+      color: white;
+      margin-left: 18px;
+      margin-right: 30px;
+      padding-top: 20px;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 14px;
+      font-family: 'Rubik', sans-serif;
+      padding-bottom: 0px;
+      padding-top: 0px;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-family: 'Rubik', sans-serif;
+      padding-top: 0px;
+    }
+
+    h4 {
+      font-size: 14px;
+      font-family: 'Rubik', sans-serif;
+      display: inline-block;
+      margin-right: 16px;
+      margin-left: 19px;
+      padding-bottom: 1px;
+      color: white;
+    }
+
+    h6 {
+      font-family: 'Rubik', sans-serif;
+      font-size: 16px;
+      display: inline-block;
+      padding-top: 11px;
+      font-weight: normal;
+    }
+
+    h5 {
+      font-size: 14px;
+      font-family: 'Rubik', sans-serif;
+      padding-bottom: 0px;
+      padding-top: 4px;
+    }
+
+    hr {
+      display: block;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      margin-left: auto;
+      margin-right: auto;
+      border-style: inset;
+      border-width: 1px;
+    }
+
+    body {
+      margin: 0px;
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Set map parameters */
+    #map {
+      position: fixed;
+      top: 0px;
+      bottom: 0px;
+      width: 100%;
+    }
+
+    #slider {
+      position: absolute;
+      height: 43px;
+      bottom: 0px;
+      left: 120px;
+      z-index: 1000;
+      background-color: white;
+      border-radius: 3px;
+      box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    #temporal {
+      background-color: white;
+    }
+
+    .temporal-legend {
+      position: absolute;
+      left: 10px;
+      height: 41px;
+      width: 89px;
+      bottom: 1px;
+      z-index: 1000;
+      background-color: white;
+      padding-bottom: 10px;
+      padding-left: 5px;
+      border-radius: 3px;
+      box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .temporal-legend div {}
+
+    .leaflet-bar {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .leaflet-control-layers-expanded {
+      font-family: 'Rubik', sans-serif;
+      font-size: 12px;
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .legend {
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 3px;
+      bottom: 30px;
+      width: 203px;
+      box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.3);
+      font: 12px/20px 'Rubik', 'Rubik', 'Rubik', sans-serif;
+      padding: 10px;
+      position: absolute;
+      right: 10px;
+      z-index: 1;
+      line-height: 18px;
+      color: #555;
+    }
+
+    .legend i {
+      width: 10px;
+      height: 10px;
+      float: left;
+      margin-right: 5px;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    .easy-button-button {
+      display: inline-block !important;
+    }
+
+    .tag-filter-tags-container {
+      left: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <!-- ui slider -->
+  <div id='slider' class='range w300 round py6 border--gray-light px12 leaflet-control'>
+    <!-- Use the first and last year of the time data as the min and max. Set the initial value as the first year. Set the steps at one year. -->
+    <input type="range" min="1914" max="1950" value="1914" step="1" class="slider" />
+  </div>
+  <!-- end slider -->
+
+  <!-- load scripts -->
+  <script src='https://api.mapbox.com/mapbox-assembly/v0.24.0/assembly.js'></script>
+  <script src='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js'></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <!-- for grouped layer control -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-groupedlayercontrol/0.6.1/leaflet.groupedlayercontrol.min.js"></script>
+
+  <script type="text/javascript">
+    // Define bounding coordinates to prevent dragging too far from Black Hawk County
+    const southWest = L.latLng(42.0, -93.0),
+      northEast = L.latLng(43.0, -91.0),
+      bounds = L.latLngBounds(southWest, northEast);
+
+    // Initialize the map
+    const map = L.map('map')
+      .setView([42.494559, -92.338884], 13)
+      .setMaxBounds(bounds);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 18,
+      minZoom: 10,
+    }).addTo(map);
+
+    // add a scale bar
+    L.control.scale().addTo(map);
+
+    // define the value in the slider when the map loads
+    let currentYear = $('.slider').val();
+
+    const petition = L.layerGroup();
+    const subdivision = L.layerGroup();
+    const parcel = L.layerGroup();
+
+    var groupedOverlays = {
+      "Restrictive Covenants": {
+        "Petition": petition,
+        "Subdivision": subdivision,
+        "Parcel": parcel
+      }
+    };
+
+    L.control.groupedLayers(null, groupedOverlays, {
+        collapsed: false,
+      }).addTo(map);
+
+/*
+    // Add functions to style the polygons by values
+    function getColorPoc(d) {
+      return d === 1 ? 'black' :
+        d === 2 ? '#8B4513' :
+        'rgba(0,0,0,0.0)';
+    };
+*/
+
+    function getColorRestrictive(d) {
+      return d === 'pet' ? 'red' :
+        d === 'sub' ? 'orange' :
+        d === 'par' ? 'blue' :
+        'rgba(0,0,0,0.0)';
+    };
+
+    // load the data asynchronously
+    // Town Boundaries and Restrictive Covenant Parcels
+    d3.queue()
+      .defer(d3.json, 'data/BH-Towns.geojson')
+      .defer(d3.json, 'data/BH-Restrictive-Covenants.geojson')
+      .await(drawMap); // load the data asynchronously
+
+    // define drawMap function
+    function drawMap(err, towns, restrictive) {
+
+      const townBounds = L.geoJson(towns, {
+        // style the layer
+        style: function(feature) {
+
+          return {
+            stroke: 0.25,
+            color: 'blue',
+            strokeOpacity: 1,
+            weight: 0.25,
+            fillColor: 'blue',
+            fillOpacity: 0.0,
+          };
+        }
+      }).addTo(map); // end pocParcels
+
+      const restrictiveParcels = L.geoJson(restrictive, {
+
+        // style the layer
+        style: function(feature) {
+
+          return {
+            stroke: 0.25,
+            color: getColorRestrictive(feature.properties.CV_type),
+            strokeOpacity: 1,
+            weight: 0.25,
+            fillColor: getColorRestrictive(feature.properties.CV_type),
+            fillOpacity: 0.5,
+          };
+        },
+
+        // for each feature...
+        onEachFeature: function(feature, layer) {
+
+          // isolate the year of the feature
+          let year = /[^/]*/.exec(layer.feature.properties.CV_date)[0];
+
+          // isolate the type of restrictive covenant
+          let type = layer.feature.properties.CV_type;
+
+          if (type == 'pet') {
+            var restr = 'PETITION';
+          } else if (type == 'sub') {
+            var restr = 'SUBDIVISION';
+          } else if (type == 'par') {
+            var restr = 'PARCEL';
+          };
+
+          // bind a popup window
+          layer.bindPopup("<h2 style='font-size:14px'><b>" + restr + ' RESTRICTION' + "</b></h2><hr><h3 style='font-size:12px'>LOT" + '<br><b>' + layer.feature.properties.legal + '</b><hr>RECORDERS NUMBER' + '<br><b>' + layer.feature.properties.CV_number +
+            '</b><hr>' + 'RESTRICTION FILED: ' + '<br><b>' + layer.feature.properties.CV_date + '</b></h3>');
+
+          // change layer style on mouseover
+          layer.on("mouseover", function(e) {
+            layer.setStyle({
+              stroke: 0.25,
+              color: '#4169E1',
+              strokeOpacity: 1,
+              weight: 0.25,
+              fillColor: '#4169E1',
+              fillOpacity: 0.5,
+            }).bringToFront();
+            layer.openPopup();
+          });
+          // reset style on mouseout
+          layer.on("mouseout", function(e) {
+            restrictiveParcels.resetStyle(e.target);
+            layer.closePopup();
+          });
+
+          // if the covenant is a petition
+          if (type == 'pet') {
+            if (year <= currentYear) {
+              petition.addLayer(layer); // add the layer to the layer group
+            } else {
+              petition.removeLayer(layer); // remove the layer from the layer group;
+            };
+          };
+
+          // if the covenant is a subdivision
+          if (type == 'sub') {
+            if (year <= currentYear) {
+              subdivision.addLayer(layer); // add the layer to the layer group
+            } else {
+              subdivision.removeLayer(layer); // remove the layer from the layer group;
+            };
+          };
+
+          // if the covenant is a parcel
+          if (type == 'par') {
+            if (year <= currentYear) {
+              parcel.addLayer(layer); // add the layer to the layer group
+            } else {
+              parcel.removeLayer(layer); // remove the layer from the layer group;
+            };
+          };
+
+        }
+
+      }); // end restrictiveParcels
+
+      // call functions defined below
+      sequenceUI(restrictiveParcels, currentYear);
+      createTemporalLegend(currentYear);
+
+    }; // end drawMap function
+
+    // add a UI slider
+    function sequenceUI(restrictiveParcels, currentYear) {
+
+      // create Leaflet control for the slider
+      const sliderControl = L.control({
+        position: 'bottomleft',
+        follow: true
+      });
+
+      // add controls to the slider
+      sliderControl.onAdd = function(map) {
+
+        const controls = L.DomUtil.get("slider");
+
+        L.DomEvent.disableScrollPropagation(controls);
+        L.DomEvent.disableClickPropagation(controls);
+
+        return controls;
+
+      }
+
+      // add the control to the map
+      sliderControl.addTo(map);
+
+      // use the jQuery ajax method to get the slider element
+      $('.slider')
+        .on('input change', function() { // when the input changes...
+          $(".temporal-legend").html('<h6>Year: ' + this.value + '</h6>');
+          let currentYear = $(this).val(); // identify the year selected with "currentYear"
+          updateParcels(restrictiveParcels, currentYear);
+        });
+
+    }; // end sequenceUI function
+
+    // add a temporal legend in sync with the UI slider
+    function createTemporalLegend(currentYear) {
+
+      const temporalLegend = L.control({
+        position: 'bottomleft' // place the temporal legend at bottom left corner
+      });
+
+      temporalLegend.onAdd = function(map) {
+        var output = L.DomUtil.create("div", "temporal-legend");
+        $(output).html('<h6>Year: ' + currentYear + '</h6>'); // set grade value to the year selected on map load
+        return output;
+      }
+
+      temporalLegend.addTo(map);
+
+    }; // end createTemporalLegend function
+
+    // add a function to update the restrictive covenants by selected year
+    function updateParcels(restrictiveParcels, currentYear) {
+
+      // access each layer in the covenants data
+      restrictiveParcels.eachLayer(function(layer) {
+
+        // isolate the year of the feature
+        let year = /[^/]*/.exec(layer.feature.properties.CV_date)[0];
+
+        // isolate the type of restrictive covenant
+        let type = layer.feature.properties.CV_type;
+
+        // if the covenant is a petition
+        if (type == 'pet') {
+          if (year <= currentYear) {
+            petition.addLayer(layer); // add the layer to the layer group
+          } else {
+            petition.removeLayer(layer); // remove the layer from the layer group;
+          };
+        };
+
+        // if the covenant is a subdivision
+        if (type == 'sub') {
+          if (year <= currentYear) {
+            subdivision.addLayer(layer); // add the layer to the layer group
+          } else {
+            subdivision.removeLayer(layer); // remove the layer from the layer group;
+          };
+        };
+
+        // if the covenant is a parcel
+        if (type == 'par') {
+          if (year <= currentYear) {
+            parcel.addLayer(layer); // add the layer to the layer group
+          } else {
+            parcel.removeLayer(layer); // remove the layer from the layer group;
+          };
+        };
+
+      });
+
+    };
+
+  </script>
+</body>
+
+</html>
