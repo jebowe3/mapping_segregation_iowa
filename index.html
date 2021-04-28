@@ -212,6 +212,11 @@
     const subdivision = L.layerGroup();
     const parcel = L.layerGroup();
 
+    // add the layers to the map
+    map.addLayer(petition);
+    map.addLayer(subdivision);
+    map.addLayer(parcel);
+
     var groupedOverlays = {
       "Restrictive Covenants": {
         "Petition": petition,
