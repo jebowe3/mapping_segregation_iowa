@@ -267,6 +267,38 @@
             fillColor: 'blue',
             fillOpacity: 0.0,
           };
+        },
+
+        // for each feature...
+        onEachFeature: function(feature, layer) {
+
+          // bind a popup
+          layer.bindPopup(layer.feature.properties.NAME20 + ", IA");
+
+          // change layer style on mouseover
+          layer.on("click", function(e) {
+            layer.setStyle({
+              stroke: 1.0,
+              color: 'blue',
+              strokeOpacity: 1,
+              weight: 1.0,
+              fillColor: 'blue',
+              fillOpacity: 0.0,
+            });
+            //layer.openPopup();
+          });
+          // reset style on mouseout
+          layer.on("mouseout", function(e) {
+            layer.setStyle({
+              stroke: 0.25,
+              color: 'blue',
+              strokeOpacity: 1,
+              weight: 0.25,
+              fillColor: 'blue',
+              fillOpacity: 0.0,
+            });
+            //layer.closePopup();
+          });
         }
       }).addTo(map); // end pocParcels
 
