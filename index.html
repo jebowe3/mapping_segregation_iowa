@@ -105,30 +105,29 @@
       bottom: 0px;
       left: 120px;
       z-index: 1000;
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.7);
       border-radius: 3px;
       box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.3);
     }
 
-    #temporal {
-      background-color: white;
-    }
-
     .temporal-legend {
+      background-color: rgba(255, 255, 255, 0.7);
       position: absolute;
       left: 10px;
       height: 41px;
       width: 89px;
-      bottom: 1px;
+      bottom: 0px;
       z-index: 1000;
-      background-color: white;
-      padding-bottom: 10px;
-      padding-left: 5px;
       border-radius: 3px;
       box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.3);
+      text-align: center;
     }
 
-    .temporal-legend div {}
+    #span {
+     display: inline-block;
+     vertical-align: middle;
+     line-height: normal;
+    }
 
     .leaflet-bar {
       background-color: rgba(255, 255, 255, 0.7);
@@ -139,7 +138,7 @@
       font-size: 12px;
       background-color: rgba(255, 255, 255, 0.7);
     }
-
+/*
     .legend {
       background-color: rgba(255, 255, 255, 0.7);
       border-radius: 3px;
@@ -163,14 +162,7 @@
       margin-top: 4px;
       opacity: 0.7;
     }
-
-    .easy-button-button {
-      display: inline-block !important;
-    }
-
-    .tag-filter-tags-container {
-      left: 30px;
-    }
+*/
   </style>
 </head>
 
@@ -211,7 +203,7 @@
     }).addTo(map);
 
     // add a scale bar
-    L.control.scale().addTo(map);
+    L.control.scale({ position: 'bottomright' }).addTo(map);
 
     // define the value in the slider when the map loads
     let currentYear = $('.slider').val();
@@ -391,7 +383,7 @@
       // use the jQuery ajax method to get the slider element
       $('.slider')
         .on('input change', function() { // when the input changes...
-          $(".temporal-legend").html('<h6>Year: ' + this.value + '</h6>');
+          $(".temporal-legend").html("<h6><span id='span'>Year: " + this.value + "</span></h6>");
           let currentYear = $(this).val(); // identify the year selected with "currentYear"
           updateParcels(restrictiveParcels, currentYear);
         });
@@ -407,7 +399,7 @@
 
       temporalLegend.onAdd = function(map) {
         var output = L.DomUtil.create("div", "temporal-legend");
-        $(output).html('<h6>Year: ' + currentYear + '</h6>'); // set grade value to the year selected on map load
+        $(output).html("<h6><span id='span'>Year: " + currentYear + "</span></h6>"); // set grade value to the year selected on map load
         return output;
       }
 
