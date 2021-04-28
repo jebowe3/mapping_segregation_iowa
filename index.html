@@ -138,12 +138,12 @@
       font-size: 12px;
       background-color: rgba(255, 255, 255, 0.7);
     }
-/*
+
     .legend {
       background-color: rgba(255, 255, 255, 0.7);
       border-radius: 3px;
       bottom: 30px;
-      width: 203px;
+      width: 175px;
       box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.3);
       font: 12px/20px 'Rubik', 'Rubik', 'Rubik', sans-serif;
       padding: 10px;
@@ -162,7 +162,7 @@
       margin-top: 4px;
       opacity: 0.7;
     }
-*/
+
   </style>
 </head>
 
@@ -202,9 +202,6 @@
       minZoom: 10,
     }).addTo(map);
 
-    // add a scale bar
-    L.control.scale({ position: 'bottomright' }).addTo(map);
-
     // define the value in the slider when the map loads
     let currentYear = $('.slider').val();
 
@@ -229,21 +226,38 @@
         collapsed: false,
       }).addTo(map);
 
-/*
-    // Add functions to style the polygons by values
-    function getColorPoc(d) {
-      return d === 1 ? 'black' :
-        d === 2 ? '#8B4513' :
-        'rgba(0,0,0,0.0)';
-    };
-*/
+    // add a scale bar
+    L.control.scale({ position: 'topright' }).addTo(map);
 
+    // define a function to color code by covenant type
     function getColorRestrictive(d) {
       return d === 'pet' ? 'red' :
         d === 'sub' ? 'orange' :
         d === 'par' ? 'blue' :
         'rgba(0,0,0,0.0)';
     };
+
+    // create legend for the covenants
+    var covenantLegend = L.control({
+      position: 'bottomright'
+    });
+
+    // add content to the legend
+    covenantLegend.onAdd = function(map) {
+
+      var div = L.DomUtil.create('div', 'info legend');
+
+      // generate a label with a colored square for each
+      div.innerHTML +=
+        "<b style='font-size:14px'>Restrictive Covenants</b>" + '<br>' + '<i style="background:' + getColorRestrictive('pet') + '"></i> ' +
+        'Petition' + '<br>' + '<i style="background:' + getColorRestrictive('sub') + '"></i> ' +
+        'Subdivision' + '<br>' + '<i style="background:' + getColorRestrictive('par') + '"></i> ' + 'Parcel';
+
+      return div;
+    };
+
+    // add this legend to the map, because this legend is on by default
+    covenantLegend.addTo(map);
 
     // load the data asynchronously
     // Town Boundaries and Restrictive Covenant Parcels
