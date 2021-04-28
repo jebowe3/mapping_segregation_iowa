@@ -350,7 +350,9 @@
 
           // bind a popup window
           layer.bindPopup("<h2 style='font-size:14px'><b>" + restr + ' RESTRICTION' + "</b></h2><hr><h3 style='font-size:12px'>LOT" + '<br><b>' + layer.feature.properties.legal + '</b><hr>RECORDERS NUMBER' + '<br><b>' + layer.feature.properties.CV_number +
-            '</b><hr>' + 'RESTRICTION FILED: ' + '<br><b>' + layer.feature.properties.CV_date + '</b></h3>');
+            '</b><hr>' + 'RESTRICTION FILED: ' + '<br><b>' + layer.feature.properties.CV_date + '</b></h3>', {
+            closeButton: false
+          });
 
           // change layer style on mouseover
           layer.on("mouseover", function(e) {
