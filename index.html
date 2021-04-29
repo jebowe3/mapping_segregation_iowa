@@ -11,20 +11,6 @@
   <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />
   <link href="https://fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
 
-  <!--for filter button icon support-->
-<!--
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/v4-shims.css">
--->
-  <!-- for easy buttons -->
-<!--
-  <link rel="stylesheet" href="css/easy-button.css">
--->
-  <!-- for filter buttons -->
-<!--
-  <link rel="stylesheet" href="css/leaflet-tag-filter-button.css">
--->
   <style type="text/css">
     h1 {
       font-size: 30px;
@@ -186,8 +172,8 @@
 
   <script type="text/javascript">
     // Define bounding coordinates to prevent dragging too far from Black Hawk County
-    const southWest = L.latLng(42.0, -93.0),
-      northEast = L.latLng(43.0, -91.0),
+    const southWest = L.latLng(41.797005, -93.033497),
+      northEast = L.latLng(43.141831, -91.581696),
       bounds = L.latLngBounds(southWest, northEast);
 
     // Initialize the map
@@ -262,7 +248,7 @@
     // load the data asynchronously
     // Town Boundaries and Restrictive Covenant Parcels
     d3.queue()
-      .defer(d3.json, 'data/BH-Towns.geojson')
+      .defer(d3.json, 'data/IA-Towns.geojson')
       .defer(d3.json, 'data/BH-Restrictive-Covenants.geojson')
       .await(drawMap); // load the data asynchronously
 
@@ -299,7 +285,6 @@
               fillColor: 'blue',
               fillOpacity: 0.0,
             });
-            //layer.openPopup();
           });
           // reset style on mouseout
           layer.on("mouseout", function(e) {
@@ -311,10 +296,9 @@
               fillColor: 'blue',
               fillOpacity: 0.0,
             });
-            //layer.closePopup();
           });
         }
-      }).addTo(map); // end pocParcels
+      }).addTo(map); // end townBounds
 
       const restrictiveParcels = L.geoJson(restrictive, {
 
