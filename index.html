@@ -332,10 +332,19 @@
             var restr = 'PARCEL';
           };
 
+          // isolate the link to the scanned covenant
+          let covenant = layer.feature.properties.web_link;
+
+          if (covenant == 'absent') {
+            var link = '';
+          } else {
+            var link = '</b><hr><a href="' + covenant + '" target="_blank">Click here to see the covenant.</a>';
+          };
+
           // bind a popup window
-          layer.bindPopup("<h2 style='font-size:14px'><b>" + restr + ' RESTRICTION' + "</b></h2><hr><h3 style='font-size:12px'>LOT" + '<br><b>' + layer.feature.properties.legal + '</b><hr>RECORDERS NUMBER' + '<br><b>' + layer.feature.properties.CV_number +
-            '</b><hr>' + 'RESTRICTION FILED: ' + '<br><b>' + layer.feature.properties.CV_date + '</b></h3>', {
-            closeButton: false
+          layer.bindPopup("<h2 style='font-size:14px'><b>" + restr + ' RESTRICTION' + "</b></h2><hr><h3 style='font-size:12px'>LOT" + '<br><b>' + layer.feature.properties.legal + "</b><hr>RECORDER'S NUMBER" + '<br><b>' + layer.feature.properties.CV_number +
+            '</b><hr>' + 'RESTRICTION FILED: ' + '<br><b>' + layer.feature.properties.CV_date + link + '</h3>', {
+            closeButton: true
           });
 
           // change layer style on mouseover
@@ -348,12 +357,15 @@
               fillColor: '#4169E1',
               fillOpacity: 0.5,
             }).bringToFront();
+          });
+          // open popup on click
+          layer.on("click", function(e) {
             layer.openPopup();
           });
           // reset style on mouseout
           layer.on("mouseout", function(e) {
             restrictiveParcels.resetStyle(e.target);
-            layer.closePopup();
+            //layer.closePopup();
           });
 
           // if the covenant is a petition
