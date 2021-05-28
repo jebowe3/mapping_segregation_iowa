@@ -271,7 +271,7 @@
     d3.queue()
       .defer(d3.json, 'data/IA-Towns.geojson')
       .defer(d3.json, 'data/JC-POC.geojson')
-      .defer(d3.json, 'data/JC-Restrictive-Covenants.geojson')
+      .defer(d3.json, 'data/JC-Restrictive-Covs.geojson')
       .await(drawMap); // load the data asynchronously
 
     // define drawMap function
@@ -420,8 +420,8 @@
 
           // bind a popup window
           layer.bindPopup("<h2 style='font-size:14px'><b>" + restriction + "</b></h2><hr><h3 style='font-size:12px'>CURRENT ADDRESS" + '<br><b>' + address + '</b><hr>SUBDIVISION' + '<br><b>' + feature.properties.SubDivisio +
-            '</b><hr>' + restriction + ' FILED: ' + '<br><b>' + feature.properties.REST_yr + '</b></h3>', {
-            closeButton: false
+            '</b><hr>' + restriction + ' FILED: ' + '<br><b>' + feature.properties.REST_yr + '</b><hr><a href="' + layer.feature.properties.weblink + '" target="_blank">Click here to see the covenant.</a></h3>', {
+            closeButton: true
           });
 
           // change layer style on mouseover
@@ -434,12 +434,15 @@
               fillColor: '#4169E1',
               fillOpacity: 0.5,
             }).bringToFront();
+          });
+          // open popup on click
+          layer.on("click", function(e) {
             layer.openPopup();
           });
           // reset style on mouseout
           layer.on("mouseout", function(e) {
             restrictiveParcels.resetStyle(e.target);
-            layer.closePopup();
+            //layer.closePopup();
           });
 
           // if the covenant is a subdivision
