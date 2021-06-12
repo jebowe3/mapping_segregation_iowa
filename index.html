@@ -9,6 +9,8 @@
 
   <link href='https://api.mapbox.com/mapbox-assembly/v0.24.0/assembly.min.css' rel='stylesheet'>
   <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />
+  <!-- for fullscreen button -->
+  <link rel="stylesheet" href="css/Control.FullScreen.css" />
   <link href="https://fonts.googleapis.com/css?family=Rubik&display=swap" rel="stylesheet">
 
   <style type="text/css">
@@ -169,6 +171,8 @@
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <!-- for grouped layer control -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-groupedlayercontrol/0.6.1/leaflet.groupedlayercontrol.min.js"></script>
+  <!-- for fullscreen button -->
+  <script src="js/Control.FullScreen.js"></script>
 
   <script type="text/javascript">
     // Define bounding coordinates to prevent dragging too far from Black Hawk County
@@ -177,7 +181,12 @@
       bounds = L.latLngBounds(southWest, northEast);
 
     // Initialize the map
-    const map = L.map('map')
+    const map = L.map('map', {
+      fullscreenControl: true,
+      fullscreenControlOptions: {
+        position: 'topleft'
+      }
+    })
       .setView([42.494559, -92.338884], 13)
       .setMaxBounds(bounds);
 
